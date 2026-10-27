@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 import src.Controller.GameController;
 
-public class View {
+public class CommandLineView implements GameViewable {
     GameController controller;
     Scanner keyboard = new Scanner(System.in);
 
@@ -24,9 +24,8 @@ public class View {
     };
 
     public void promptForFlip(){
-        System.err.println("Press enter to reveal cards");
-        keyboard.nextLine();
-        controller.flipCards();
+        System.out.println("Press enter to deal again or +q to exit");
+        controller.nextAction(keyboard.nextLine());
     };
 
     public void promptForNewGame(){

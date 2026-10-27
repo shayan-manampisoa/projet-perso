@@ -3,11 +3,11 @@ package src.Controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import src.Games.GameEvaluator;
 import src.Model.Deck;
 import src.Model.Player;
 import src.Model.PlayingCard;
-import src.View.View;
-
+import src.View.GameViewable;
 
 
 public class GameController {
@@ -21,16 +21,19 @@ public class GameController {
     Deck deck;
     List<Player> players;
     Player winner;
-    View view;
+    GameViewable view;
     GameState gameState;
 
-    public GameController(Deck deck, View view) {
+    GameEvaluator evaluator;
+
+    public GameController(Deck deck, GameViewable view, GameEvaluator evaluator) {
         super();
         this.deck = deck;
         this.view = view;
         this.players = new ArrayList<Player>();
-        this.view.setController(this);
+        view.setController(this);
         this.gameState = GameState.AddingPlayers;
+        this.evaluator = evaluator;
     }
 
     public void run() {
@@ -87,39 +90,8 @@ public class GameController {
     }
 
     void evaluateWinner() {
-        Player bestPlayer = null;
-        int bestRank = -1;
-        int bestSuit = -1;
-
-        for(Player player : players){
-            boolean newBestPlayer = false;
-
-            if(bestPlayer == null){
-                newBestPlayer = true;
-            }
-            else{
-                PlayingCard pc = player.getCard(0);
-                int thisRank = pc.getRank().value();
-                if(thisRank >= bestRank){
-                    if(thisRank > bestRank){
-                         newBestPlayer = true;
-                    }
-                } else{
-                    if(pc.getSuit().value() > bestSuit){
-                        newBestPlayer = true;
-                    }
-                }
-            }
-
-            if(newBestPlayer){
-                bestPlayer = player;
-                PlayingCard pc = player.getCard(0);
-                bestRank = pc.getRank().value();
-                bestSuit = pc.getSuit().value();
-            }
-        }
-
-        winner = bestPlayer;
+        winner = evaluator.evaluateWinner(players);
+        
     }
 
     void displayWinner() {
@@ -129,6 +101,19 @@ public class GameController {
     void rebuiltDeck() {
         for(Player player : players) {
             deck.returnCardToDeck(player.removeCard());
+        }
+    }
+
+    void exitGame() {
+        System.exit(0);
+    }
+
+    public void nextAction(String nextChoice) {
+        if("+q".equals(nextChoice)){
+            exitGame();
+        }
+        else{
+            startGame();
         }
     }
 }

@@ -1,7 +1,12 @@
 package src.Model;
 
 public enum Suit {
-    DIAMONDS(1), HEARTS(2), SPADES(3), CLUBS(4);
+    NONE(0),
+    DIAMONDS(1), 
+    HEARTS(2),
+    SPADES(3), 
+    CLUBS(4);
+    
     int suit;
     
     private Suit(int suit) {
